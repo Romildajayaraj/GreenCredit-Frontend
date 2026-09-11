@@ -3,7 +3,7 @@ import { useAuth } from '../context/AuthContext'
 import { motion } from 'framer-motion'
 import { FiHeart, FiMessageSquare, FiMapPin, FiThumbsDown, FiSend } from 'react-icons/fi'
 import InfiniteScroll from 'react-infinite-scroll-component'
-import axios from 'axios'
+import api, { API_URL } from '../app'
 import Swal from 'sweetalert2'
 
 const Feed = () => {
@@ -20,7 +20,7 @@ const Feed = () => {
 
   const fetchUploads = async () => {
     try {
-      const response = await axios.get(`/api/uploads?page=${page}&limit=10`)
+      const response = await api.get(`/api/uploads?page=${page}&limit=10`)
       const newUploads = response.data.uploads
 
       if (page === 1) {
@@ -55,7 +55,7 @@ const Feed = () => {
     }
 
     try {
-      const response = await axios.post(`/api/uploads/${uploadId}/like`)
+      const response = await api.post(`/api/uploads/${uploadId}/like`)
       setUploads(prev => prev.map(upload => 
         upload._id === uploadId ? response.data : upload
       ))
@@ -75,7 +75,7 @@ const Feed = () => {
     }
 
     try {
-      const response = await axios.post(`/api/uploads/${uploadId}/dislike`)
+      const response = await api.post(`/api/uploads/${uploadId}/dislike`)
       setUploads(prev => prev.map(upload => 
         upload._id === uploadId ? response.data : upload
       ))
@@ -98,7 +98,7 @@ const Feed = () => {
     if (!text?.trim()) return
 
     try {
-      const response = await axios.post(`/api/uploads/${uploadId}/comment`, { text })
+      const response = await api.post(`/api/uploads/${uploadId}/comment`, { text })
       setUploads(prev => prev.map(upload => 
         upload._id === uploadId ? response.data : upload
       ))
@@ -165,7 +165,11 @@ const Feed = () => {
                   <div className="w-12 h-12 bg-gradient-to-r from-primary-400 to-primary-600 rounded-full flex items-center justify-center overflow-hidden">
                     {upload.user?.profileImage ? (
                       <img
-                        src={`http://localhost:5000${upload.user.profileImage}`}
+                        src={
+  upload.user.profileImage.startsWith('http')
+    ? upload.user.profileImage
+    : `${API_URL}${upload.user.profileImage}`
+}
                         alt={upload.user.name}
                         className="w-full h-full object-cover"
                       />
@@ -190,13 +194,21 @@ const Feed = () => {
                 <div className="rounded-xl overflow-hidden mb-4">
                   {upload.mediaType === 'image' ? (
                     <img
-                      src={upload.mediaUrl.startsWith('http') ? upload.mediaUrl : `http://localhost:5000${upload.mediaUrl}`}
+                      src={
+  upload.mediaUrl.startsWith('http')
+    ? upload.mediaUrl
+    : `${API_URL}${upload.mediaUrl}`
+}
                       alt={upload.title}
                       className="w-full h-64 md:h-96 object-cover hover:scale-105 transition-transform duration-300"
                     />
                   ) : (
                     <video
-                      src={upload.mediaUrl.startsWith('http') ? upload.mediaUrl : `http://localhost:5000${upload.mediaUrl}`}
+                      src={
+  upload.mediaUrl.startsWith('http')
+    ? upload.mediaUrl
+    : `${API_URL}${upload.mediaUrl}`
+}
                       controls
                       className="w-full h-64 md:h-96 object-cover"
                     />
@@ -244,7 +256,11 @@ const Feed = () => {
                         <div className="w-8 h-8 bg-gradient-to-r from-secondary-400 to-secondary-600 rounded-full flex items-center justify-center overflow-hidden">
                           {comment.user?.profileImage ? (
                             <img
-                              src={`http://localhost:5000${comment.user.profileImage}`}
+                              src={
+  comment.user.profileImage.startsWith('http')
+    ? comment.user.profileImage
+    : `${API_URL}${comment.user.profileImage}`
+}
                               alt={comment.user.name}
                               className="w-full h-full object-cover"
                             />
@@ -268,7 +284,11 @@ const Feed = () => {
                     <div className="w-8 h-8 bg-gradient-to-r from-primary-400 to-primary-600 rounded-full flex items-center justify-center overflow-hidden">
                       {user.profileImage ? (
                         <img
-                          src={`http://localhost:5000${user.profileImage}`}
+                          src={
+  user.profileImage.startsWith('http')
+    ? user.profileImage
+    : `${API_URL}${user.profileImage}`
+}
                           alt={user.name}
                           className="w-full h-full object-cover"
                         />

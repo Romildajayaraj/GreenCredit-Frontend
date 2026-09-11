@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { motion } from 'framer-motion'
 import { FiTrendingUp, FiAward, FiUsers, FiStar } from 'react-icons/fi'
-import axios from 'axios'
+import api, { API_URL } from '../app'
 
 const Leaderboard = () => {
   const { user } = useAuth()
@@ -16,7 +16,7 @@ const Leaderboard = () => {
 
   const fetchLeaderboard = async () => {
     try {
-      const response = await axios.get('/api/users/leaderboard')
+      const response = await api.get('/api/users/leaderboard')
       setLeaderboard(response.data)
     } catch (error) {
       console.error('Error fetching leaderboard:', error)
@@ -93,7 +93,11 @@ const Leaderboard = () => {
                       <div className="w-20 h-20 bg-gradient-to-r from-primary-400 to-primary-600 rounded-full flex items-center justify-center overflow-hidden">
                         {topUser.profileImage ? (
                           <img
-                            src={`http://localhost:5000${topUser.profileImage}`}
+                            src={
+  topUser.profileImage.startsWith('http')
+    ? topUser.profileImage
+    : `${API_URL}${topUser.profileImage}`
+}
                             alt={topUser.name}
                             className="w-full h-full object-cover"
                           />
@@ -143,7 +147,11 @@ const Leaderboard = () => {
                         <div className="w-12 h-12 bg-gradient-to-r from-primary-400 to-primary-600 rounded-full flex items-center justify-center overflow-hidden">
                           {userData.profileImage ? (
                             <img
-                              src={`http://localhost:5000${userData.profileImage}`}
+                              src={
+  userData.profileImage.startsWith('http')
+    ? userData.profileImage
+    : `${API_URL}${userData.profileImage}`
+}
                               alt={userData.name}
                               className="w-full h-full object-cover"
                             />
@@ -266,7 +274,11 @@ const Leaderboard = () => {
                   <div className="w-16 h-16 bg-gradient-to-r from-primary-400 to-primary-600 rounded-full flex items-center justify-center mx-auto mb-4 overflow-hidden">
                     {user.profileImage ? (
                       <img
-                        src={`http://localhost:5000${user.profileImage}`}
+                        src={
+  user.profileImage.startsWith('http')
+    ? user.profileImage
+    : `${API_URL}${user.profileImage}`
+}
                         alt={user.name}
                         className="w-full h-full object-cover"
                       />

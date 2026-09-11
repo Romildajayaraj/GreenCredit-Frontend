@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { motion } from 'framer-motion'
 import { FiUpload, FiTrendingUp, FiAward, FiMessageSquare, FiEye, FiHeart, FiUsers } from 'react-icons/fi'
-import axios from 'axios'
+import api, { API_URL } from '../app'
 
 const Dashboard = () => {
   const { user } = useAuth()
@@ -24,8 +24,8 @@ const Dashboard = () => {
   const fetchDashboardData = async () => {
     try {
       const [statsRes, uploadsRes] = await Promise.all([
-        axios.get('/api/users/stats'),
-        axios.get('/api/users/my-uploads')
+        api.get('/api/users/stats'),
+        api.get('/api/users/my-uploads')
       ])
       
       setStats(statsRes.data)
@@ -140,13 +140,13 @@ const Dashboard = () => {
                       <div className="w-16 h-16 rounded-xl overflow-hidden">
                         {upload.mediaType === 'image' ? (
                           <img
-                            src={upload.mediaUrl.startsWith('http') ? upload.mediaUrl : `http://localhost:5000${upload.mediaUrl}`}
+                            src={upload.mediaUrl.startsWith('http') ? upload.mediaUrl : `${API_URL}${upload.mediaUrl}`}
                             alt={upload.title}
                             className="w-full h-full object-cover"
                           />
                         ) : (
                           <video
-                            src={upload.mediaUrl.startsWith('http') ? upload.mediaUrl : `http://localhost:5000${upload.mediaUrl}`}
+                            src={upload.mediaUrl.startsWith('http') ? upload.mediaUrl : `${API_URL}${upload.mediaUrl}`}
                             className="w-full h-full object-cover"
                             muted
                           />

@@ -6,7 +6,7 @@ import {
   FiLock, FiShield, FiDownload, FiTrash2, FiEye, FiEyeOff, FiAward,
   FiCalendar, FiTrendingUp, FiHeart, FiMessageCircle, FiUpload, FiCheck
 } from 'react-icons/fi'
-import axios from 'axios'
+import api, { API_URL } from '../app'
 import Swal from 'sweetalert2'
 
 const MyProfile = () => {
@@ -43,7 +43,7 @@ const MyProfile = () => {
 
   const fetchProfile = async () => {
     try {
-      const response = await axios.get('/api/profile/me')
+      const response = await api.get('/api/profile/me')
       setProfile(response.data)
       setFormData({
         name: response.data.name || '',
@@ -87,7 +87,7 @@ const MyProfile = () => {
     formData.append('profileImage', file)
 
     try {
-      const response = await axios.post('/api/profile/upload-image', formData, {
+      const response = await api.post('/api/profile/upload-image', formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       })
       
@@ -107,7 +107,7 @@ const MyProfile = () => {
 
   const handleSaveProfile = async () => {
     try {
-      const response = await axios.put('/api/profile/update', formData)
+      const response = await api.put('/api/profile/update', formData)
       setProfile(prev => ({ ...prev, ...response.data.user }))
       setEditing(false)
       Swal.fire('Success', 'Profile updated successfully', 'success')
@@ -123,7 +123,7 @@ const MyProfile = () => {
     }
 
     try {
-      await axios.put('/api/profile/change-password', passwordData)
+      await api.put('/api/profile/change-password', passwordData)
       setPasswordData({ currentPassword: '', newPassword: '', confirmPassword: '' })
       setChangingPassword(false)
       Swal.fire('Success', 'Password changed successfully', 'success')
@@ -134,7 +134,7 @@ const MyProfile = () => {
 
   const handleDownloadData = async () => {
     try {
-      const response = await axios.get('/api/profile/download-data', {
+      const response = await api.get('/api/profile/download-data', {
         responseType: 'blob'
       })
       
@@ -178,7 +178,7 @@ const MyProfile = () => {
 
     if (password) {
       try {
-        await axios.delete('/api/profile/delete-account', {
+        await api.delete('/api/profile/delete-account', {
           data: password
         })
         
@@ -241,7 +241,11 @@ const MyProfile = () => {
                   <div className="w-32 h-32 rounded-full overflow-hidden bg-gradient-to-r from-primary-400 to-primary-600 flex items-center justify-center text-white text-4xl font-bold mx-auto">
                     {profile.profileImage ? (
                       <img
-                        src={`http://localhost:5000${profile.profileImage}`}
+                        src={
+  profile.profileImage.startsWith('http')
+    ? profile.profileImage
+    : `${API_URL}${profile.profileImage}`
+}
                         alt={profile.name}
                         className="w-full h-full object-cover"
                       />

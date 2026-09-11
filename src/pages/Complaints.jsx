@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { FiPlus, FiMapPin, FiClock, FiAlertCircle, FiCheckCircle, FiX, FiUpload } from 'react-icons/fi'
 import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet'
-import axios from 'axios'
+import api, { API_URL } from '../app'
 import Swal from 'sweetalert2'
 
 const LocationMarker = ({ position, setPosition }) => {
@@ -38,7 +38,7 @@ const Complaints = () => {
 
   const fetchComplaints = async () => {
     try {
-      const response = await axios.get('/api/complaints/user')
+      const response = await api.get('/api/complaints/user')
       setComplaints(response.data)
     } catch (error) {
       console.error('Error fetching complaints:', error)
@@ -147,7 +147,7 @@ const Complaints = () => {
     complaintData.append('priority', formData.priority)
 
     try {
-      await axios.post('/api/complaints', complaintData, {
+      await api.post('/api/complaints', complaintData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
@@ -475,7 +475,7 @@ const Complaints = () => {
                     {complaint.imageUrls && complaint.imageUrls.length > 0 ? (
                       <div className="space-y-2">
                         <img
-                          src={complaint.imageUrls[0].startsWith('http') ? complaint.imageUrls[0] : `http://localhost:5000${complaint.imageUrls[0]}`}
+                          src={complaint.imageUrls[0].startsWith('http') ? complaint.imageUrls[0] : `${API_URL}${complaint.imageUrls[0]}`}
                           alt={complaint.title}
                           className="w-full h-48 object-cover rounded-xl hover:scale-105 transition-transform duration-300"
                         />
@@ -484,7 +484,7 @@ const Complaints = () => {
                             {complaint.imageUrls.slice(1, 4).map((imageUrl, index) => (
                               <img
                                 key={index}
-                                src={imageUrl.startsWith('http') ? imageUrl : `http://localhost:5000${imageUrl}`}
+                                src={imageUrl.startsWith('http') ? imageUrl : `${API_URL}${imageUrl}`}
                                 alt={`${complaint.title} ${index + 2}`}
                                 className="w-full h-16 object-cover rounded-lg hover:scale-105 transition-transform duration-300"
                               />

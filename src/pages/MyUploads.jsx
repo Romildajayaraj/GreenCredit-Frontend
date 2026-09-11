@@ -6,7 +6,7 @@ import {
   FiHeart, FiMessageCircle, FiThumbsDown, FiAward, FiBarChart2, 
   FiCalendar, FiEye, FiEdit, FiTrash2, FiDownload, FiStar
 } from 'react-icons/fi'
-import axios from 'axios'
+import api, { API_URL } from '../app'
 import Swal from 'sweetalert2'
 
 const MyUploads = () => {
@@ -28,7 +28,7 @@ const MyUploads = () => {
 
   const fetchUploads = async () => {
     try {
-      const response = await axios.get('/api/users/my-uploads', {
+      const response = await api.get('/api/users/my-uploads', {
         params: filters
       })
       setUploads(response.data.uploads)
@@ -40,7 +40,7 @@ const MyUploads = () => {
 
   const fetchStats = async () => {
     try {
-      const response = await axios.get('/api/users/stats')
+      const response = await api.get('/api/users/stats')
       setStats(response.data)
     } catch (error) {
       console.error('Error fetching stats:', error)
@@ -74,7 +74,7 @@ const MyUploads = () => {
 
     if (result.isConfirmed) {
       try {
-        await axios.delete(`/api/uploads/${uploadId}`)
+        await api.delete(`/api/uploads/${uploadId}`)
         fetchUploads()
         fetchStats()
         Swal.fire('Deleted!', 'Upload has been deleted.', 'success')
@@ -323,14 +323,21 @@ const MyUploads = () => {
                 <div className="relative">
                   {upload.mediaType === 'image' ? (
                     <img
-                      src={`http://localhost:5000${upload.mediaUrl}`}
+                      src={
+  upload.mediaUrl.startsWith('http')
+    ? upload.mediaUrl
+    : `${API_URL}${upload.mediaUrl}`
+}
                       alt={upload.title}
                       className="w-full h-48 object-cover rounded-xl"
                     />
                   ) : (
                     <video
-                      src={`http://localhost:5000${upload.mediaUrl}`}
-                      className="w-full h-48 object-cover rounded-xl"
+src={
+  upload.mediaUrl.startsWith('http')
+    ? upload.mediaUrl
+    : `${API_URL}${upload.mediaUrl}`
+}                      className="w-full h-48 object-cover rounded-xl"
                       controls
                     />
                   )}

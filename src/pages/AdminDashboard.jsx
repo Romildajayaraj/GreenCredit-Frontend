@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { FiUsers, FiUpload, FiMessageSquare, FiTrendingUp, FiCheckCircle, FiX, FiEye, FiSearch, FiFilter, FiMapPin, FiAward, FiPlus, FiEdit2, FiTrash2 } from 'react-icons/fi'
 import { MapContainer, TileLayer, Marker } from 'react-leaflet'
-import axios from 'axios'
+import api, { API_URL } from '../app'
 import Swal from 'sweetalert2'
 
 const AdminDashboard = () => {
@@ -34,7 +34,7 @@ const AdminDashboard = () => {
 
   const fetchDashboardData = async () => {
     try {
-      const response = await axios.get('/api/admin/dashboard')
+      const response = await api.get('/api/admin/dashboard')
       setDashboardStats(response.data)
     } catch (error) {
       console.error('Error fetching dashboard data:', error)
@@ -45,7 +45,7 @@ const AdminDashboard = () => {
 
   const fetchUsers = async () => {
     try {
-      const response = await axios.get(`/api/admin/users?search=${searchTerm}`)
+      const response = await api.get(`/api/admin/users?search=${searchTerm}`)
       setUsers(response.data.users)
     } catch (error) {
       console.error('Error fetching users:', error)
@@ -54,7 +54,7 @@ const AdminDashboard = () => {
 
   const fetchPendingUploads = async () => {
     try {
-      const response = await axios.get('/api/admin/uploads/pending')
+      const response = await api.get('/api/admin/uploads/pending')
       setPendingUploads(response.data)
     } catch (error) {
       console.error('Error fetching pending uploads:', error)
@@ -63,7 +63,7 @@ const AdminDashboard = () => {
 
   const fetchComplaints = async () => {
     try {
-      const response = await axios.get(`/api/admin/complaints?status=${statusFilter}`)
+      const response = await api.get(`/api/admin/complaints?status=${statusFilter}`)
       const priorityOrder = { high: 1, medium: 2, low: 3 }
       const sorted = response.data.complaints.sort(
         (a, b) => (priorityOrder[a.priority] || 2) - (priorityOrder[b.priority] || 2)
@@ -76,7 +76,7 @@ const AdminDashboard = () => {
 
   const fetchUserDetails = async (userId) => {
     try {
-      const response = await axios.get(`/api/admin/users/${userId}/details`)
+      const response = await api.get(`/api/admin/users/${userId}/details`)
       setSelectedUser(response.data)
       setShowUserModal(true)
     } catch (error) {
@@ -107,7 +107,7 @@ const AdminDashboard = () => {
 
     if (formValues) {
       try {
-        await axios.post('/api/admin/award-credits', {
+        await api.post('/api/admin/award-credits', {
           userId: selectedUser._id,
           credits: formValues.credits,
           reason: formValues.reason
@@ -124,7 +124,7 @@ const AdminDashboard = () => {
 
   const approveUpload = async (uploadId, creditPoints = 10) => {
     try {
-      await axios.put(`/api/admin/uploads/${uploadId}/approve`, { creditPoints })
+      await api.put(`/api/admin/uploads/${uploadId}/approve`, { creditPoints })
       Swal.fire({
         icon: 'success',
         title: 'Upload Approved!',
@@ -155,7 +155,7 @@ const AdminDashboard = () => {
 
     if (result.isConfirmed) {
       try {
-        await axios.delete(`/api/admin/uploads/${uploadId}`)
+        await api.delete(`/api/admin/uploads/${uploadId}`)
         Swal.fire({
           icon: 'success',
           title: 'Deleted!',
@@ -176,7 +176,7 @@ const AdminDashboard = () => {
 
   const updateComplaintStatus = async (complaintId, status, adminResponse = '') => {
     try {
-      await axios.put(`/api/admin/complaints/${complaintId}/status`, { status, adminResponse })
+      await api.put(`/api/admin/complaints/${complaintId}/status`, { status, adminResponse })
       Swal.fire({
         icon: 'success',
         title: 'Status Updated!',
@@ -227,7 +227,7 @@ const AdminDashboard = () => {
 
   const fetchSchemes = async () => {
     try {
-      const res = await axios.get('/api/schemes/admin/all')
+      const res = await api.get('/api/schemes/admin/all')
       setSchemes(res.data)
     } catch (error) {
       console.error('Error fetching schemes:', error)
@@ -238,10 +238,10 @@ const AdminDashboard = () => {
     e.preventDefault()
     try {
       if (editingScheme) {
-        await axios.put(`/api/schemes/${editingScheme._id}`, schemeForm)
+        await api.put(`/api/schemes/${editingScheme._id}`, schemeForm)
         Swal.fire({ icon: 'success', title: 'Scheme Updated!', timer: 2000, showConfirmButton: false })
       } else {
-        await axios.post('/api/schemes', schemeForm)
+        await api.post('/api/schemes', schemeForm)
         Swal.fire({ icon: 'success', title: 'Scheme Created!', timer: 2000, showConfirmButton: false })
       }
       setShowSchemeForm(false)
@@ -263,7 +263,7 @@ const AdminDashboard = () => {
       confirmButtonText: 'Yes, delete'
     })
     if (result.isConfirmed) {
-      await axios.delete(`/api/schemes/${id}`)
+      await api.delete(`/api/schemes/${id}`)
       Swal.fire({ icon: 'success', title: 'Deleted!', timer: 2000, showConfirmButton: false })
       fetchSchemes()
     }
@@ -309,11 +309,10 @@ const AdminDashboard = () => {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`flex items-center space-x-2 px-4 py-2 rounded-xl font-medium transition-all duration-300 ${
-                activeTab === tab.id
-                  ? 'bg-primary-500 text-white shadow-lg'
-                  : 'bg-white text-secondary-600 hover:bg-primary-50 hover:text-primary-600'
-              }`}
+              className={`flex items-center space-x-2 px-4 py-2 rounded-xl font-medium transition-all duration-300 ${activeTab === tab.id
+                ? 'bg-primary-500 text-white shadow-lg'
+                : 'bg-white text-secondary-600 hover:bg-primary-50 hover:text-primary-600'
+                }`}
             >
               <tab.icon className="w-4 h-4" />
               <span>{tab.name}</span>
@@ -474,7 +473,7 @@ const AdminDashboard = () => {
                             <div className="w-10 h-10 bg-gradient-to-r from-primary-400 to-primary-600 rounded-full flex items-center justify-center text-white font-bold overflow-hidden">
                               {user.profileImage ? (
                                 <img
-                                  src={`http://localhost:5000${user.profileImage}`}
+                                  src={`${API_URL}${user.profileImage}`}
                                   alt={user.name}
                                   className="w-full h-full object-cover"
                                 />
@@ -496,7 +495,7 @@ const AdminDashboard = () => {
                           {new Date(user.createdAt).toLocaleDateString()}
                         </td>
                         <td className="py-3 px-4">
-                          <button 
+                          <button
                             onClick={() => fetchUserDetails(user._id)}
                             className="text-primary-600 hover:text-primary-700 font-medium"
                           >
@@ -521,7 +520,7 @@ const AdminDashboard = () => {
           >
             <div className="card">
               <h2 className="text-2xl font-bold text-secondary-900 mb-6">Pending Upload Approvals</h2>
-              
+
               {pendingUploads.length > 0 ? (
                 <div className="space-y-6">
                   {pendingUploads.map((upload) => (
@@ -530,13 +529,13 @@ const AdminDashboard = () => {
                         <div className="w-full lg:w-64 h-48 rounded-xl overflow-hidden mb-4 lg:mb-0">
                           {upload.mediaType === 'image' ? (
                             <img
-                              src={upload.mediaUrl.startsWith('http') ? upload.mediaUrl : `http://localhost:5000${upload.mediaUrl}`}
+                              src={upload.mediaUrl.startsWith('http') ? upload.mediaUrl : `${API_URL}${upload.mediaUrl}`}
                               alt={upload.title}
                               className="w-full h-full object-cover"
                             />
                           ) : (
                             <video
-                              src={upload.mediaUrl.startsWith('http') ? upload.mediaUrl : `http://localhost:5000${upload.mediaUrl}`}
+                              src={upload.mediaUrl.startsWith('http') ? upload.mediaUrl : `${API_URL}${upload.mediaUrl}`}
                               controls
                               className="w-full h-full object-cover"
                             />
@@ -546,7 +545,7 @@ const AdminDashboard = () => {
                         <div className="flex-1">
                           <h3 className="text-xl font-bold text-secondary-900 mb-2">{upload.title}</h3>
                           <p className="text-secondary-700 mb-4">{upload.description}</p>
-                          
+
                           <div className="flex items-center space-x-4 text-sm text-secondary-600 mb-4">
                             <span>By: {upload.user?.name}</span>
                             <span>�</span>
@@ -659,7 +658,7 @@ const AdminDashboard = () => {
                           {complaint.imageUrls && complaint.imageUrls.length > 0 ? (
                             <div className="space-y-2">
                               <img
-                                src={complaint.imageUrls[0].startsWith('http') ? complaint.imageUrls[0] : `http://localhost:5000${complaint.imageUrls[0]}`}
+                                src={complaint.imageUrls[0].startsWith('http') ? complaint.imageUrls[0] : `${API_URL}${complaint.imageUrls[0]}`}
                                 alt={complaint.title}
                                 className="w-full h-48 object-cover rounded-xl"
                               />
@@ -692,11 +691,10 @@ const AdminDashboard = () => {
                           <div className="flex items-start justify-between mb-4">
                             <div className="flex items-center space-x-3">
                               <h3 className="text-xl font-bold text-secondary-900">{complaint.title}</h3>
-                              <span className={`px-2 py-1 rounded-full text-xs font-bold ${
-                                complaint.priority === 'high' ? 'bg-red-100 text-red-700' :
+                              <span className={`px-2 py-1 rounded-full text-xs font-bold ${complaint.priority === 'high' ? 'bg-red-100 text-red-700' :
                                 complaint.priority === 'low' ? 'bg-green-100 text-green-700' :
-                                'bg-yellow-100 text-yellow-700'
-                              }`}>
+                                  'bg-yellow-100 text-yellow-700'
+                                }`}>
                                 {complaint.priority === 'high' ? '🔴 High' : complaint.priority === 'low' ? '🟢 Low' : '🟡 Medium'}
                               </span>
                             </div>
@@ -711,9 +709,9 @@ const AdminDashboard = () => {
                               <option value="rejected">Rejected</option>
                             </select>
                           </div>
-                          
+
                           <p className="text-secondary-700 mb-4">{complaint.description}</p>
-                          
+
                           <div className="flex items-center space-x-4 text-sm text-secondary-600 mb-4">
                             <span>By: {complaint.user?.name}</span>
                             <span>•</span>
@@ -773,7 +771,7 @@ const AdminDashboard = () => {
                               <FiMessageSquare className="w-4 h-4" />
                               <span>Add Response</span>
                             </button>
-                           
+
                           </div>
                         </div>
                       </div>
@@ -905,9 +903,8 @@ const AdminDashboard = () => {
                         <div className="flex-1">
                           <div className="flex items-center space-x-3 mb-2">
                             <h3 className="text-lg font-bold text-secondary-900">{scheme.name}</h3>
-                            <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${
-                              scheme.isActive ? 'bg-green-100 text-green-700' : 'bg-secondary-100 text-secondary-500'
-                            }`}>
+                            <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${scheme.isActive ? 'bg-green-100 text-green-700' : 'bg-secondary-100 text-secondary-500'
+                              }`}>
                               {scheme.isActive ? 'Active' : 'Inactive'}
                             </span>
                             <span className="px-2 py-0.5 bg-blue-100 text-blue-700 rounded-full text-xs font-semibold">
@@ -968,7 +965,7 @@ const AdminDashboard = () => {
                       <div className="w-24 h-24 bg-gradient-to-r from-primary-400 to-primary-600 rounded-full flex items-center justify-center text-white text-3xl font-bold mx-auto mb-4 overflow-hidden">
                         {selectedUser.profileImage ? (
                           <img
-                            src={`http://localhost:5000${selectedUser.profileImage}`}
+                            src={`${API_URL}${selectedUser.profileImage}`}
                             alt={selectedUser.name}
                             className="w-full h-full object-cover"
                           />
@@ -989,7 +986,7 @@ const AdminDashboard = () => {
                         </div>
                         <p className="text-sm text-primary-600 mt-1">Rank #{selectedUser.stats?.rank || 'N/A'}</p>
                       </div>
-                      
+
                       <div className="bg-green-50 p-4 rounded-xl">
                         <div className="flex items-center justify-between">
                           <span className="text-green-700 font-medium">Uploads</span>
@@ -997,7 +994,7 @@ const AdminDashboard = () => {
                         </div>
                         <p className="text-sm text-green-600 mt-1">{selectedUser.stats?.approvedUploads || 0} approved</p>
                       </div>
-                      
+
                       <div className="bg-blue-50 p-4 rounded-xl">
                         <div className="flex items-center justify-between">
                           <span className="text-blue-700 font-medium">Complaints</span>
@@ -1009,7 +1006,7 @@ const AdminDashboard = () => {
 
                     {/* Action Buttons */}
                     <div className="mt-6">
-                      
+
                     </div>
                   </div>
 
@@ -1060,9 +1057,8 @@ const AdminDashboard = () => {
                               <div key={upload._id} className="border border-secondary-200 rounded-lg p-4 hover:bg-secondary-50 transition-colors">
                                 <div className="flex items-start justify-between mb-2">
                                   <h5 className="font-medium text-secondary-900">{upload.title}</h5>
-                                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                                    upload.isApproved ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
-                                  }`}>
+                                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${upload.isApproved ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
+                                    }`}>
                                     {upload.isApproved ? `Approved (+${upload.creditPoints} credits)` : 'Pending'}
                                   </span>
                                 </div>
@@ -1071,14 +1067,14 @@ const AdminDashboard = () => {
                                   <div className="mb-3">
                                     {upload.mediaType === 'image' ? (
                                       <img
-                                        src={`http://localhost:5000${upload.mediaUrl}`}
+                                        src={`${API_URL}${upload.mediaUrl}`}
                                         alt={upload.title}
                                         className="w-full max-w-xs h-32 object-cover rounded-lg cursor-pointer"
-                                        onClick={() => window.open(`http://localhost:5000${upload.mediaUrl}`, '_blank')}
+                                        onClick={() => window.open(`${API_URL}${upload.mediaUrl}`, '_blank')}
                                       />
                                     ) : upload.mediaType === 'video' ? (
                                       <video
-                                        src={`http://localhost:5000${upload.mediaUrl}`}
+                                        src={`${API_URL}${upload.mediaUrl}`}
                                         className="w-full max-w-xs h-32 object-cover rounded-lg"
                                         controls
                                       />
@@ -1119,12 +1115,11 @@ const AdminDashboard = () => {
                               <div key={complaint._id} className="border border-secondary-200 rounded-lg p-4 hover:bg-secondary-50 transition-colors">
                                 <div className="flex items-start justify-between mb-2">
                                   <h5 className="font-medium text-secondary-900">{complaint.title}</h5>
-                                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                                    complaint.status === 'resolved' ? 'bg-green-100 text-green-800' :
+                                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${complaint.status === 'resolved' ? 'bg-green-100 text-green-800' :
                                     complaint.status === 'in-progress' ? 'bg-blue-100 text-blue-800' :
-                                    complaint.status === 'rejected' ? 'bg-red-100 text-red-800' :
-                                    'bg-yellow-100 text-yellow-800'
-                                  }`}>
+                                      complaint.status === 'rejected' ? 'bg-red-100 text-red-800' :
+                                        'bg-yellow-100 text-yellow-800'
+                                    }`}>
                                     {complaint.status}
                                   </span>
                                 </div>
@@ -1135,10 +1130,10 @@ const AdminDashboard = () => {
                                       {complaint.images.slice(0, 4).map((image, index) => (
                                         <img
                                           key={index}
-                                          src={`http://localhost:5000${image}`}
+                                          src={`${API_URL}${image}`}
                                           alt={`Complaint evidence ${index + 1}`}
                                           className="w-full h-20 object-cover rounded cursor-pointer"
-                                          onClick={() => window.open(`http://localhost:5000${image}`, '_blank')}
+                                          onClick={() => window.open(`${API_URL}${image}`, '_blank')}
                                         />
                                       ))}
                                     </div>

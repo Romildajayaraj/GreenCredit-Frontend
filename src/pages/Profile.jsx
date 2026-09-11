@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { FiMapPin, FiCalendar, FiHeart, FiMessageSquare, FiAward, FiUpload } from 'react-icons/fi'
-import axios from 'axios'
+import api, { API_URL } from '../app'
 
 const Profile = () => {
   const { id } = useParams()
@@ -17,7 +17,7 @@ const Profile = () => {
 
   const fetchUserProfile = async () => {
     try {
-      const response = await axios.get(`/api/users/profile/${id}`)
+      const response = await api.get(`/api/users/profile/${id}`)
       setUser(response.data)
     } catch (error) {
       console.error('Error fetching user profile:', error)
@@ -26,7 +26,7 @@ const Profile = () => {
 
   const fetchUserUploads = async () => {
     try {
-      const response = await axios.get(`/api/uploads/user/${id}`)
+      const response = await api.get(`/api/uploads/user/${id}`)
       setUploads(response.data)
     } catch (error) {
       console.error('Error fetching user uploads:', error)
@@ -70,7 +70,11 @@ const Profile = () => {
             <div className="w-32 h-32 bg-gradient-to-r from-primary-400 to-primary-600 rounded-full flex items-center justify-center text-white text-4xl font-bold animate-glow overflow-hidden">
               {user.profileImage ? (
                 <img
-                  src={`http://localhost:5000${user.profileImage}`}
+                  src={
+  user.profileImage.startsWith('http')
+    ? user.profileImage
+    : `${API_URL}${user.profileImage}`
+}
                   alt={user.name}
                   className="w-full h-full object-cover"
                 />
@@ -151,13 +155,21 @@ const Profile = () => {
                   <div className="relative rounded-xl overflow-hidden mb-4">
                     {upload.mediaType === 'image' ? (
                       <img
-                        src={upload.mediaUrl.startsWith('http') ? upload.mediaUrl : `http://localhost:5000${upload.mediaUrl}`}
+                        src={
+  upload.mediaUrl.startsWith('http')
+    ? upload.mediaUrl
+    : `${API_URL}${upload.mediaUrl}`
+}
                         alt={upload.title}
                         className="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-300"
                       />
                     ) : (
                       <video
-                        src={upload.mediaUrl.startsWith('http') ? upload.mediaUrl : `http://localhost:5000${upload.mediaUrl}`}
+                        src={
+  upload.mediaUrl.startsWith('http')
+    ? upload.mediaUrl
+    : `${API_URL}${upload.mediaUrl}`
+}
                         className="w-full h-48 object-cover"
                         controls
                       />

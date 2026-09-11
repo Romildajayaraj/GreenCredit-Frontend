@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { FiAward, FiDownload, FiLock, FiCheckCircle, FiStar } from 'react-icons/fi'
-import axios from 'axios'
+import api from '../app'
 import Swal from 'sweetalert2'
 
 const Schemes = () => {
@@ -16,7 +16,7 @@ const Schemes = () => {
 
   const fetchSchemes = async () => {
     try {
-      const res = await axios.get('/api/schemes/eligible')
+      const res = await api.get('/api/schemes/eligible')
       setSchemes(res.data.schemes)
       setUserPoints(res.data.userPoints)
     } catch (error) {
@@ -29,7 +29,7 @@ const Schemes = () => {
   const downloadCertificate = async (scheme) => {
     setDownloading(scheme._id)
     try {
-      const res = await axios.get(`/api/schemes/${scheme._id}/certificate`, {
+      const res = await api.get(`/api/schemes/${scheme._id}/certificate`, {
         responseType: 'blob'
       })
       const url = window.URL.createObjectURL(new Blob([res.data], { type: 'application/pdf' }))

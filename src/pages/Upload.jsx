@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { FiUpload, FiMapPin, FiImage, FiVideo, FiX } from 'react-icons/fi'
 import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet'
-import axios from 'axios'
+import api from '../app'
 import Swal from 'sweetalert2'
 
 const LocationMarker = ({ position, setPosition }) => {
@@ -118,7 +118,7 @@ const Upload = () => {
     uploadData.append('address', formData.address)
 
     try {
-      await axios.post('/api/uploads', uploadData, {
+      await api.post('/api/uploads', uploadData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }

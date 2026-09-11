@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { useAuth } from '../context/AuthContext'
 import { motion } from 'framer-motion'
 import { FiSend, FiPaperclip, FiSmile, FiImage, FiVideo, FiMic, FiFile, FiX, FiCornerUpLeft, FiTrash2, FiDownload, FiUsers } from 'react-icons/fi'
-import axios from 'axios'
+import api, { API_URL } from '../app'
 import Swal from 'sweetalert2'
 import io from 'socket.io-client'
 
@@ -29,7 +29,7 @@ const Chat = () => {
   useEffect(() => {
     if (user) {
       const token = localStorage.getItem('token')
-      const newSocket = io('http://localhost:5000', {
+      const newSocket = io(API_URL, {
         auth: { token }
       })
 
@@ -109,7 +109,7 @@ const Chat = () => {
 
   const fetchMessages = async () => {
     try {    
-      const response = await axios.get('/api/chat/rooms/general')
+      const response = await api.get('/api/chat/rooms/general')
       setMessages(response.data.messages || [])
     } catch (error) {
       console.error('Error fetching messages:', error)
@@ -204,7 +204,7 @@ const Chat = () => {
       // Stop typing indicator
       handleTyping(false)
       
-      await axios.post('/api/chat/rooms/general/messages', formData, {
+      await api.post('/api/chat/rooms/general/messages', formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       })
       
@@ -228,7 +228,7 @@ const Chat = () => {
 
   const reactToMessage = async (messageId, emoji) => {
     try {
-      await axios.put(`/api/chat/rooms/general/messages/${messageId}/react`, { emoji })
+      await api.put(`/api/chat/rooms/general/messages/${messageId}/react`, { emoji })
     } catch (error) {
       console.error('Error reacting to message:', error)
     }
@@ -247,7 +247,7 @@ const Chat = () => {
 
     if (result.isConfirmed) {
       try {
-        await axios.delete(`/api/chat/rooms/general/messages/${messageId}`)
+        await api.delete(`/api/chat/rooms/general/messages/${messageId}`)
         Swal.fire('Deleted!', 'Message has been deleted.', 'success')
       } catch (error) {
         Swal.fire('Error!', 'Failed to delete message.', 'error')
@@ -320,7 +320,7 @@ const Chat = () => {
                     <div className="w-8 h-8 bg-gradient-to-r from-primary-400 to-primary-600 rounded-full flex items-center justify-center text-white text-sm font-bold overflow-hidden">
                       {onlineUser.profileImage ? (
                         <img
-                          src={`http://localhost:5000${onlineUser.profileImage}`}
+                          src={`${API_URL}${onlineUser.profileImage}`}
                           alt={onlineUser.name}
                           className="w-full h-full object-cover"
                         />
@@ -377,7 +377,7 @@ const Chat = () => {
                           <div className="w-6 h-6 bg-gradient-to-r from-primary-400 to-primary-600 rounded-full flex items-center justify-center text-white text-xs font-bold overflow-hidden">
                             {message.sender.profileImage ? (
                               <img
-                                src={`http://localhost:5000${message.sender.profileImage}`}
+                                src={`${API_URL}${message.sender.profileImage}`}
                                 alt={message.sender.name}
                                 className="w-full h-full object-cover"
                               />
@@ -426,7 +426,7 @@ const Chat = () => {
                                     <p className="text-xs opacity-75">{formatFileSize(file.fileSize)}</p>
                                   </div>
                                   <a
-                                    href={file.fileUrl.startsWith('http') ? file.fileUrl : `http://localhost:5000${file.fileUrl}`}
+                                    href={file.fileUrl.startsWith('http') ? file.fileUrl : `${API_URL}${file.fileUrl}`}
                                     download={file.originalName}
                                     className={`p-1 rounded hover:${
                                       message.sender._id === user?.id ? 'bg-black bg-opacity-20' : 'bg-secondary-200'
@@ -439,10 +439,10 @@ const Chat = () => {
                                 {file.fileType === 'image' && (
                                   <div className="mt-2">
                                     <img
-                                      src={file.fileUrl.startsWith('http') ? file.fileUrl : `http://localhost:5000${file.fileUrl}`}
+                                      src={file.fileUrl.startsWith('http') ? file.fileUrl : `${API_URL}${file.fileUrl}`}
                                       alt={file.originalName}
                                       className="max-w-xs max-h-64 rounded-lg cursor-pointer hover:opacity-90 transition-opacity"
-                                      onClick={() => window.open(file.fileUrl.startsWith('http') ? file.fileUrl : `http://localhost:5000${file.fileUrl}`, '_blank')}
+                                      onClick={() => window.open(file.fileUrl.startsWith('http') ? file.fileUrl : `${API_URL}${file.fileUrl}`, '_blank')}
                                     />
                                   </div>
                                 )}
@@ -450,7 +450,7 @@ const Chat = () => {
                                 {file.fileType === 'video' && (
                                   <div className="mt-2">
                                     <video
-                                      src={file.fileUrl.startsWith('http') ? file.fileUrl : `http://localhost:5000${file.fileUrl}`}
+                                      src={file.fileUrl.startsWith('http') ? file.fileUrl : `${API_URL}${file.fileUrl}`}
                                       controls
                                       className="max-w-xs max-h-64 rounded-lg"
                                     />
@@ -460,7 +460,7 @@ const Chat = () => {
                                 {file.fileType === 'audio' && (
                                   <div className="mt-2">
                                     <audio controls className="w-full max-w-xs">
-                                      <source src={file.fileUrl.startsWith('http') ? file.fileUrl : `http://localhost:5000${file.fileUrl}`} />
+                                      <source src={file.fileUrl.startsWith('http') ? file.fileUrl : `${API_URL}${file.fileUrl}`} />
                                       Your browser does not support the audio element.
                                     </audio>
                                   </div>
