@@ -29,7 +29,11 @@ const Dashboard = () => {
       ])
       
       setStats(statsRes.data)
-      setRecentUploads(uploadsRes.data.slice(0, 3))
+      setRecentUploads(
+  Array.isArray(uploadsRes.data)
+    ? uploadsRes.data.slice(0, 3)
+    : (uploadsRes.data.uploads || []).slice(0, 3)
+)
     } catch (error) {
       console.error('Error fetching dashboard data:', error)
     } finally {
