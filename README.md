@@ -276,8 +276,5 @@ If you found this project interesting or useful, consider giving the repository 
 
 🌱 <b>Build Green. Live Green. Earn Green Credits.</b> 🌱
 
-<br><br>
-
-Made with ❤️ using <b>React.js</b>
 
 </p>
