@@ -210,8 +210,8 @@ The application will normally be available at:
 
 | Field | Details |
 |---|---|
-| 📧 Email | `YOUR_DEMO_USER_EMAIL` |
-| 🔑 Password | `YOUR_DEMO_USER_PASSWORD` |
+| 📧 Email | `testuser@gmail.com` |
+| 🔑 Password | `123456` |
 
 ---
 
