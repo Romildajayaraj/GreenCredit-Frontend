@@ -22,7 +22,7 @@
   </a>
 </p>
 
----
+
 
 ## 🌍 About The Project
 
@@ -151,76 +151,133 @@ GreenCredit-Frontend/
 ├── package.json
 ├── tailwind.config.js
 ├── vite.config.js
-└── README.md ```
-
-#⚙️ Getting Started
+└── README.md
+```
+## ⚙️ Getting Started
 
 Follow these steps to run the frontend locally.
 
-1️⃣ Clone the Repository
-        git clone https://github.com/Romildajayaraj/GreenCredit-Frontend.git
-2️⃣ Navigate to the Project
-        cd GreenCredit-Frontend
-3️⃣ Install Dependencies
-        npm install
-4️⃣ Configure Environment Variables
-        Create a .env file in the project root.
-        VITE_API_URL=https://greencredit-backend.onrender.com
+### 1️⃣ Clone the Repository
 
-⚠️ Do not commit your .env file to GitHub if it contains private credentials or secrets.
+```bash
+git clone https://github.com/Romildajayaraj/GreenCredit-Frontend.git
+```
 
-5️⃣ Start Development Server
-        npm run dev
+### 2️⃣ Navigate to the Project
+
+```bash
+cd GreenCredit-Frontend
+```
+
+### 3️⃣ Install Dependencies
+
+```bash
+npm install
+```
+
+### 4️⃣ Configure Environment Variables
+
+Create a `.env` file in the project root.
+
+```env
+VITE_API_URL=https://greencredit-backend.onrender.com
+```
+
+⚠️ Do not commit private credentials or secrets to GitHub.
+
+### 5️⃣ Start Development Server
+
+```bash
+npm run dev
+```
+
 The application will normally be available at:
-http://localhost:3000
 
-#🔐 Demo Credentials
+👉 http://localhost:3000
 
-👨‍💼 Admin Account
+---
 
-Email    : admin@greencredit.com
-Password : admin123
+## 🔐 Demo Credentials
 
-👤 Demo User Account
+### 👨‍💼 Admin Account
 
-Email    : YOUR_DEMO_USER_EMAIL
-Password : YOUR_DEMO_USER_PASSWORD
+| Field | Details |
+|---|---|
+| 📧 Email | `admin@greencredit.com` |
+| 🔑 Password | `admin123` |
 
-# 🌐 Deployment
+### 👤 Demo User Account
 
-The frontend is deployed using Netlify.
+| Field | Details |
+|---|---|
+| 📧 Email | `YOUR_DEMO_USER_EMAIL` |
+| 🔑 Password | `YOUR_DEMO_USER_PASSWORD` |
 
-Production Environment Variable
-        VITE_API_URL=https://greencredit-backend.onrender.com
+---
 
-After modifying environment variables, trigger a new deployment/build in Netlify.
+## 🌐 Deployment
 
-# 🎯 Project Goals
+The frontend is deployed using **Netlify**.
 
-The main goals of this project are to:
+### 🚀 Production URL
 
-🌱 Encourage environmentally friendly activities
-♻️ Promote sustainable practices
-🏆 Reward users through green credits
-🚨 Enable environmental issue reporting
-👥 Build an environmentally conscious community
-📊 Track environmental contributions
-🌍 Create awareness about sustainability
-👩‍💻 Author
-        Romilda J
+👉 https://greencreditenvitracking.netlify.app
 
-🎓 B.Tech Computer Science & Engineering
+### 🔗 Backend API
 
-## Connect With Me
-💻 GitHub:
+👉 https://greencredit-backend.onrender.com
+
+### ⚙️ Production Environment Variable
+
+```env
+VITE_API_URL=https://greencredit-backend.onrender.com
+```
+
+🔄 After modifying environment variables in Netlify, trigger a new deployment.
+
+---
+
+## 🎯 Project Goals
+
+🌱 Encourage environmentally friendly activities  
+♻️ Promote sustainable practices  
+🏆 Reward users through Green Credits  
+🚨 Enable environmental issue reporting  
+👥 Build an environmentally conscious community  
+📊 Track environmental contributions  
+🌍 Create awareness about sustainability  
+
+---
+
+## 👩‍💻 Author
+
+### Romilda J
+
+🎓 **B.Tech – Computer Science & Engineering**
+
+### 🔗 Connect With Me
+
+💻 **GitHub:**  
 https://github.com/Romildajayaraj
-💼 LinkedIn:
+
+💼 **LinkedIn:**  
 https://www.linkedin.com/in/romilda-j
-📧 Email:
+
+📧 **Email:**  
 romilda973j@gmail.com
+
+---
 
 ## ⭐ Support
 
 If you found this project interesting or useful, consider giving the repository a ⭐ on GitHub!
 
-<p align="center"> 🌱 <b>Build Green. Live Green. Earn Green Credits.</b> 🌱 </p> <p align="center"> Made with ❤️ using React.js </p> ```
+<p align="center">
+
+🌱 <b>Build Green. Live Green. Earn Green Credits.</b> 🌱
+
+<br><br>
+
+Made with ❤️ using <b>React.js</b>
+
+</p>
